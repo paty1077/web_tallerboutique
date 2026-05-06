@@ -117,18 +117,32 @@ async function enviarWhatsApp() {
     let link = "";
 
     try {
+
+        const boton = document.querySelector("#btnEnviar");
+
+        boton.disabled = true;
+        boton.textContent = "Enviando...";
+
         const respuesta = await fetch("/guardar-informe", {
             method: "POST",
             body: formData
         });
+        
+        const data = await respuesta.json();
 
-        const texto = await respuesta.text();
-        console.log("RESPUESTA SERVIDOR:", texto);
+        if (data.ok) {
+            alert("✅ Informe enviado correctamente");
+        } else {
+            alert("⚠️ Hubo un problema al enviar el informe");
+        }
 
-        const resultado = JSON.parse(texto);
+        boton.disabled = false;
+        boton.textContent = "Enviar informe";
 
-        if (resultado.ok && resultado.link) {
-            link = resultado.link;
+        console.log("RESPUESTA SERVIDOR:", data);
+
+        if (data.ok && data.link) {
+            link = data.link;
         } else {
             alert("No llegó el enlace del informe.");
             return;

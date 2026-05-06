@@ -439,7 +439,7 @@ app.post("/guardar-informe", upload.any(), async (req, res) => {
                 mensaje: "Informe guardado, pero no se pudo enviar automático",
                 enviadoAutomatico: false,
                 telefono: telefono,
-                link: link
+                link: urlInforme
             });
         }
 
