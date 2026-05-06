@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="css/normalize.css" as="style">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <title>Taller Boutique</title>
+    <link rel="icon" href="img/logohorizontalinverso.png" type="image/x-icon">
+    <link rel="preload" href="css/style.css" as="style">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-contenido">
+            <img src="img/Chiquitocomun.png" alt="Logo Restore" class="logo-img">
+        </div>
+    </header>
+
+    <main class="container">
+
+        <header class="encabezado">
+            <h1 class="titulo-formulario">Informe Vehicular</h1>
+            <p class="subtitulo">Completá los datos y enviá el informe por WhatsApp</p>
+        </header>
+
+        <form>
+
+            <section class="seccion">
+                <h2>Datos del Cliente</h2>
+
+                <label for="cliente">Cliente</label>
+                <input type="text" id="cliente">
+
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono">
+            </section>
+
+            <section class="seccion">
+                <h2>Datos del Vehículo</h2>
+
+                <label for="marca">Marca</label>
+                <input type="text" id="marca">
+
+                <label for="modelo">Modelo</label>
+                <input type="text" id="modelo">
+
+                <label for="anio">Año</label>
+                <input type="text" id="anio">
+
+                <label for="kms">Kilómetros</label>
+                <input type="text" id="kms">
+
+                <label for="matricula">Matrícula</label>
+                <input type="text" id="matricula">
+            </section>
+
+            <section class="seccion">
+                <h2>Estado General</h2>
+
+                <label for="estado">Condición</label>
+                <select id="estado">
+                    <option>Excelente</option>
+                    <option>Muy Bueno</option>
+                    <option>Bueno</option>
+                    <option>Regular</option>
+                    <option>Requiere revisión</option>
+                </select>
+            </section>
+
+            <section class="seccion">
+                <h2>Resultados de la inspección</h2>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Chasis <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="chasis" placeholder="Estado del chasis, golpes, óxido, soldaduras..."></textarea>
+                        <label for="fotos_chasis" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file" id="fotos_chasis" name="fotos_chasis" multiple accept="image/*">
+                        <div id="preview_fotos_chasis" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Carrocería <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="carroceria" placeholder="Pintura, rayones, bollos, reparaciones..."></textarea>
+                        <label for="fotos_carroceria" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file"
+                               id="fotos_carroceria"
+                               name="fotos_carroceria"
+                               multiple
+                               accept="image/*">
+                        <div id="preview_fotos_carroceria" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Interior <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="interior" placeholder="Tapizados, tablero, comandos, limpieza general..."></textarea>
+                        <label for="fotos_interior" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file"
+                               id="fotos_interior"
+                               name="fotos_interior"
+                               multiple
+                               accept="image/*">
+                        <div id="preview_fotos_interior" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Mecánica <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="mecanica" placeholder="Motor, caja, embrague, pérdidas, ruidos..."></textarea>
+                        <label for="fotos_mecanica" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file"
+                               id="fotos_mecanica"
+                               name="fotos_mecanica"
+                               multiple
+                               accept="image/*">
+                        <div id="preview_fotos_mecanica" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Electrónica <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="electronica" placeholder="Luces, sensores, tablero, escáner, batería..."></textarea>
+                        <label for="fotos_electronica" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file"
+                               id="fotos_electronica"
+                               name="fotos_electronica"
+                               multiple
+                               accept="image/*">
+                        <div id="preview_fotos_electronica" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Prueba Dinámica <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="prueba" placeholder="Comportamiento en marcha, frenado, dirección, ruidos..."></textarea>
+                        <label for="fotos_prueba" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file"
+                               id="fotos_prueba"
+                               name="fotos_prueba"
+                               multiple
+                               accept="image/*">
+                        <div id="preview_fotos_prueba" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Resumen <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="resumen" placeholder="Resumen general del estado del vehículo..."></textarea>
+                        <label for="fotos_resumen" class="label-foto">📷 Adjuntar imágenes</label>
+                        <input type="file"
+                               id="fotos_resumen"
+                               name="fotos_resumen"
+                               multiple
+                               accept="image/*">
+                        <div id="preview_fotos_resumen" class="preview-fotos"></div>
+                    </div>
+                </div>
+
+                <div class="acordeon-item">
+                    <button type="button" class="acordeon-btn">
+                        Recomendaciones <span>⌄</span>
+                    </button>
+                    <div class="acordeon-contenido">
+                        <textarea id="recomendaciones" placeholder="Trabajos sugeridos, mantenimiento próximo, puntos a revisar..."></textarea>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="seccion">
+                <h2>Presupuesto</h2>
+            
+                <label for="presupuesto_xlsx" class="label-foto">
+                    📄 Adjuntar presupuesto Excel
+                </label>
+            
+                <input type="file"
+                       id="presupuesto_xlsx"
+                       name="presupuesto_xlsx"
+                       accept=".xlsx,.xls">
+            </section>
+
+            <button class="boton-whatsapp" type="button" onclick="enviarWhatsApp()">
+                📲 Enviar informe por WhatsApp
+            </button>
+
+        </form>
+
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

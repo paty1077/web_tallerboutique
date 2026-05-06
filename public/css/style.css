@@ -1,0 +1,402 @@
+:root{
+    --oscuro:#1F2937;
+
+    --grisOscuro:#334155;
+    --grisMedio:#475569;
+    --gris:#6B7280;
+
+    --borde:#E5E7EB;
+    --bordeFile:#CBD5E1;
+
+    --fondo:#F8FAFC;
+    --fondoSuave:#F3F6F9;
+    --fondoHover:#F1F5F9;
+
+    --blanco:#FFFFFF;
+
+    --heroInicio:#475569;
+    --heroFin:#64748B;
+
+    --heroInicioHover:#334155;
+    --heroFinHover:#475569;
+}
+
+/* =========================
+   GLOBALES
+========================= */
+html{
+    font-size:62.5%;
+    box-sizing:border-box;
+}
+
+*, *::before, *::after{
+    box-sizing:inherit;
+}
+
+body{
+    margin:0;
+    padding:0;
+    font-size:1.6rem;
+    font-family:"Montserrat", sans-serif;
+    background:linear-gradient(
+        180deg,
+        var(--fondoSuave) 0%,
+        var(--fondo) 35%
+    );
+    color:var(--oscuro);
+    line-height:1.5;
+    overflow-x:hidden;
+}
+
+
+/* Tipografía */
+h1{ font-size:3.8rem; }
+h2{ font-size:2.4rem; }
+h3{ font-size:1.8rem; }
+
+h1, h2, h3{
+    margin:0;
+    font-family:"Montserrat", sans-serif;
+    color: var(--oscuro);
+}
+.hero{
+    width: 100%;
+    margin:1.5rem auto;
+    min-height:12rem; 
+    border-radius: 1rem;
+    padding: 1.2rem 1.5rem 4rem;
+    background:
+        linear-gradient(
+            135deg,
+            var(--heroInicio),
+            var(--heroFin)
+        ),
+        radial-gradient(
+            circle at center,
+            rgba(255,255,255,.14),
+            transparent 38%
+        );
+    box-shadow:0 1.2rem 3.5rem rgba(15,23,42,.16);    
+
+}
+
+.hero-contenido{
+    width:100%;
+    height: 18rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align: center;
+}
+
+
+.logo-img{
+    width: 100%;
+    max-width: 50rem;
+    height:auto;
+    margin: 0;
+    padding-top: 3rem;
+    display:block;
+    filter:drop-shadow(0 1.2rem 2.4rem rgba(15,23,42,.28));
+}
+
+/* Contenedor */
+.container{
+
+    max-width:72rem;
+    margin: 3rem auto 3rem;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
+    padding:4rem;
+    border-radius:1rem;
+    box-shadow:0 3rem 7rem rgba(15,23,42,.14);
+}
+
+
+/* Encabezado formulario */
+.encabezado{
+    text-align:center;
+    margin-bottom:2rem;
+}
+
+.titulo-formulario{
+    font-size:3.4rem;
+    font-weight:800;
+    letter-spacing:0.25rem;
+    margin-bottom:.8rem;
+    text-transform: uppercase;
+}
+
+.subtitulo{
+    color: var(--gris);
+    font-size:1.55rem;
+    margin-top:0;
+}
+
+/* Secciones */
+.seccion{
+    margin-top:2.4rem;
+    padding:2.4rem;
+    background: var(--blanco);
+    border:1px solid var(--borde);
+    border-radius: 1rem;
+    box-shadow:0 1rem 2.5rem rgba(15,23,42,.04);
+}
+
+.seccion h2{
+    font-size:2.1rem;
+    font-weight:800;
+    margin-bottom:1.8rem;
+}
+
+/* Formulario */
+label{
+    display:block;
+    margin-top:1.5rem;
+    margin-bottom:.7rem;
+    font-weight:600;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:1.4rem 1.6rem;
+    border:1px solid var(--borde);
+    border-radius:1.4rem;
+    font-size:1.6rem;
+    font-family:"Montserrat", sans-serif;
+    background-color:var(--blanco);
+    transition:.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    outline:none;
+    border-color:var(--oscuro);
+    box-shadow:0 0 0 .4rem rgba(217,4,41,.08);
+}
+
+textarea{
+    min-height:13rem;
+    resize:vertical;
+}
+
+/* Acordeón */
+.acordeon-item{
+    margin-top:1.4rem;
+    background:var(--blanco);
+    border:1px solid var(--borde);
+    border-radius:1.6rem;
+    overflow:hidden;
+}
+
+.acordeon-btn{
+    width:100%;
+    margin:0;
+    padding:1.7rem 1.8rem;
+    border:none;
+    background:var(--blanco);
+    color:var(--oscuro);
+    font-family:"Urbanist", sans-serif;
+    font-size:1.9rem;
+    font-weight:800;
+    text-align:left;
+    cursor:pointer;
+    box-shadow:none;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.acordeon-btn:hover{
+    transform:none;
+    background: var(--fondoHover);
+}
+
+.acordeon-btn span{
+    color:var(--oscuro);
+    font-size:2.4rem;
+    transition:.3s;
+}
+
+.acordeon-contenido{
+    display:none;
+    padding:0 1.8rem 1.8rem 1.8rem;
+}
+
+.acordeon-item.activo .acordeon-contenido{
+    display:block;
+}
+
+.acordeon-item.activo .acordeon-btn span{
+    transform:rotate(180deg);
+}
+
+/* Botón WhatsApp */
+.boton-whatsapp{
+    width:100%;
+    margin-top:3rem;
+    padding:1.8rem;
+    border:none;
+    border-radius:1.8rem;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--heroInicio),
+        var(--heroFin)
+    );
+    color: var(--blanco);
+    font-size:1.8rem;
+    font-weight:700;
+    font-family:"Urbanist", sans-serif;
+    letter-spacing:.3px;
+
+    cursor:pointer;
+    transition:all .3s ease;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+
+    box-shadow:
+        0 1.2rem 3rem rgba(15,23,42,.18),
+        inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.boton-whatsapp:hover{
+    transform:translateY(-3px);
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--heroInicioHover),
+        var(--heroFinHover)
+    );
+
+    box-shadow:
+        0 1.6rem 3.5rem rgba(15,23,42,.24),
+        inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.boton-whatsapp:active{
+    transform:scale(.98);
+}
+
+/* Upload archivos premium */
+.label-foto{
+    display:block;
+    margin-top:1.8rem;
+    margin-bottom:1rem;
+
+    font-size:1.45rem;
+    font-weight:700;
+    color: var(--grisMedio);
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+.label-foto:hover{
+    color: var(--oscuro);
+}
+
+input[type="file"]{
+    width:100%;
+    padding:1.8rem;
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--blanco),
+            var(--fondo)
+        );
+
+
+    border:1.5px dashed var(--bordeFile);
+    border-radius:1.6rem;
+
+    font-size:1.45rem;
+    color: var(--gris);
+
+    cursor:pointer;
+    transition:all .3s ease;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+input[type="file"]:hover{
+    border-color: var(--grisMedio);
+    background: var(--fondoHover);
+}
+
+input[type="file"]:focus{
+    outline:none;
+    border-color: var(--grisMedio);
+    box-shadow:0 0 0 .4rem rgba(71,85,105,.10);
+}
+
+input[type="file"]::file-selector-button{
+    border:none;
+    padding:1rem 1.4rem;
+    border-radius:1rem;
+
+    background: var(--grisMedio);
+    color: var(--blanco);
+
+    font-weight:600;
+    cursor:pointer;
+    margin-right:1rem;
+
+    transition:.3s;
+}
+
+input[type="file"]::file-selector-button:hover{
+    background: var(--oscuro);
+}
+
+.preview-fotos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.preview-fotos img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--borde);
+}
+
+.preview-item {
+    position: relative;
+}
+
+.preview-item img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--borde);
+}
+
+.btn-eliminar {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--oscuro);
+    color: var(--blanco);
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
