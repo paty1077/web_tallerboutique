@@ -7,7 +7,11 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"]
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage"
+        ]
     }
 });
 
@@ -19,13 +23,19 @@ client.on("qr", qr => {
 });
 
 client.on("ready", () => {
-    botListo = true;
     console.log("WhatsApp conectado correctamente");
 });
 
-client.on("disconnected", reason => {
-    botListo = false;
+client.on("authenticated", () => {
+    console.log("WhatsApp autenticado");
+});
+
+client.on("disconnected", (reason) => {
     console.log("WhatsApp desconectado:", reason);
+});
+
+client.on("auth_failure", (msg) => {
+    console.log("Fallo autenticación:", msg);
 });
 
 client.initialize();
