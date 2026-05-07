@@ -1,41 +1,32 @@
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 
-const client = new Client({
-    authStrategy: new LocalAuth({
-        clientId: "taller-boutique"
-    }),
-    puppeteer: {
-        headless: true,
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage"
-        ]
-    }
-});
+
 
 let botListo = false;
 
-client.on("qr", qr => {
-    console.log("Escaneá este QR con WhatsApp:");
+const client = new Client({
+    authStrategy: new LocalAuth({
+        clientId: 'BotTrabajo'
+    }),
+    puppeteer: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
+});
+
+client.on('qr', qr => {
+    console.log('Escaneá este QR con EL OTRO CELULAR');
     qrcode.generate(qr, { small: true });
 });
 
-client.on("ready", () => {
-    console.log("WhatsApp conectado correctamente");
+client.on('ready', () => {
+    console.log('✅ WhatsApp CONECTADO');
+    botListo = true;
 });
 
-client.on("authenticated", () => {
-    console.log("WhatsApp autenticado");
-});
-
-client.on("disconnected", (reason) => {
-    console.log("WhatsApp desconectado:", reason);
-});
-
-client.on("auth_failure", (msg) => {
-    console.log("Fallo autenticación:", msg);
+client.on('disconnected', reason => {
+    console.log('ERROR: Desconectado:', reason);
 });
 
 client.initialize();
@@ -76,7 +67,6 @@ Gracias por confiar en nosotros.`;
 
     console.log("Informe enviado por WhatsApp a:", numero);
 }
-
 module.exports = {
     enviarInformeWhatsApp
 };
