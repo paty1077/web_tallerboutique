@@ -415,8 +415,7 @@ app.post("/guardar-informe", upload.any(), async (req, res) => {
         console.log("TOKEN GUARDADO:", token);
         console.log("ID GUARDADO:", informeId);
 
-        const urlInforme = `https://tallerboutique.netlify.app/informe/${token}`;
-
+        const urlInforme = `https://tallerboutique.com.uy/informe/${token}`;
         try {
             await enviarInformeWhatsApp(
                 telefono,
