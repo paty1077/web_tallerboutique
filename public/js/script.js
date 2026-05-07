@@ -150,7 +150,7 @@ async function enviarWhatsApp() {
 
     } catch (error) {
         console.error("ERROR REAL:", error);
-        alert("Hubo un error al guardar el informe.");
+        alert("Error al guardar informe: " + error.message);
         return;
     }
 

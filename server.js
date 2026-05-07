@@ -13,8 +13,9 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.use(session({
     secret: "tallerboutique2026",
@@ -272,7 +273,12 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 20 * 1024 * 1024
+    }
+});
 
 function convertirExcelAPdf(archivoExcel, carpetaSalida) {
     return new Promise((resolve, reject) => {
@@ -733,4 +739,21 @@ app.get("/logout", (req, res) => {
         res.redirect("/login");
     });
 
+});
+
+app.use((err, req, res, next) => {
+
+    console.error("ERROR GLOBAL:", err);
+
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+            ok: false,
+            mensaje: err.message
+        });
+    }
+
+    res.status(500).json({
+        ok: false,
+        mensaje: err.message
+    });
 });
