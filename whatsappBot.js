@@ -30,19 +30,33 @@ client.on("disconnected", reason => {
 
 client.initialize();
 
-async function enviarInformeWhatsApp(telefono, cliente, urlInforme) {
-    if (!botListo) {
-        console.log("WhatsApp todavía no está listo");
-        return;
+async function enviarInformeWhatsApp(telefono, cliente, urlInforme){
+
+    if(!botListo){
+        throw new Error("WhatsApp todavía no está listo");
     }
 
-    const numeroLimpio = telefono.replace(/\D/g, "");
+    let numero = telefono.replace(/\D/g, "");
 
-    const chatId = `${numeroLimpio}@c.us`;
+    if(numero.startsWith("0")){
+        numero = "598" + numero.substring(1);
+    }
+
+    if(numero.length === 8){
+        numero = "598" + numero;
+    }
+
+    const chatId = numero + "@c.us";
+
+    console.log("Intentando enviar WhatsApp a:", chatId);
+
+    const existe = await client.isRegisteredUser(chatId);
+
+    if(!existe){
+        throw new Error("El número no está registrado en WhatsApp: " + numero);
+    }
 
     const mensaje = `Hola ${cliente || ""}, te compartimos el informe vehicular realizado por Taller Boutique.
-
-Podés verlo en el siguiente enlace:
 
 ${urlInforme}
 
@@ -50,7 +64,7 @@ Gracias por confiar en nosotros.`;
 
     await client.sendMessage(chatId, mensaje);
 
-    console.log("Informe enviado por WhatsApp a:", numeroLimpio);
+    console.log("Informe enviado por WhatsApp a:", numero);
 }
 
 module.exports = {
