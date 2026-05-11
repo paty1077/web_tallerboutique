@@ -11,9 +11,23 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox', "--disable-dev-shm-usage"]
     }
 });
+
+/* 👇 AGREGAR ACÁ */
+process.on("SIGINT", async () => {
+    console.log("Cerrando WhatsApp y Chromium...");
+
+    try {
+        await client.destroy();
+    } catch (error) {
+        console.log("Error cerrando client:", error);
+    }
+
+    process.exit();
+});
+
 
 client.on('qr', qr => {
     console.log('Escaneá este QR con EL OTRO CELULAR');
