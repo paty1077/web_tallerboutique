@@ -27,11 +27,99 @@ app.use(session({
     }
 }));
 
-
 const usuarioAdmin = {
     usuario: "taller",
-    passwordHash: bcrypt.hashSync("fungel", 10)
+    passwordHash: bcrypt.hashSync("boutique", 10)
 };
+
+//Lista Informes 
+app.get("/admin/informes", verificarLogin, async (req, res) => {
+    try {
+        const [informes] = await pool.query(`
+            SELECT id, token, cliente, telefono, marca, modelo, matricula, estado, fecha_creado
+            FROM informes_vehiculares
+            ORDER BY id DESC
+        `);
+
+        res.send(`
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Informes guardados</title>
+                <style>
+                    body{
+                        font-family: Arial, sans-serif;
+                        background:#F8FAFC;
+                        padding:2rem;
+                    }
+                    .contenedor{
+                        max-width:1100px;
+                        margin:auto;
+                        background:white;
+                        padding:2rem;
+                        border-radius:1.5rem;
+                    }
+                    table{
+                        width:100%;
+                        border-collapse:collapse;
+                    }
+                    th, td{
+                        padding:1rem;
+                        border-bottom:1px solid #ddd;
+                        text-align:left;
+                    }
+                    a{
+                        display:inline-block;
+                        padding:.7rem 1rem;
+                        background:#475569;
+                        color:white;
+                        text-decoration:none;
+                        border-radius:.8rem;
+                        margin:.2rem;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="contenedor">
+                    <h1>Informes guardados</h1>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Vehículo</th>
+                                <th>Matrícula</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${informes.map(informe => `
+                                <tr>
+                                    <td>${informe.cliente || ""}</td>
+                                    <td>${informe.marca || ""} ${informe.modelo || ""}</td>
+                                    <td>${informe.matricula || ""}</td>
+                                    <td>${informe.estado || ""}</td>
+                                    <td>
+                                        <a href="/informe/${informe.token}" target="_blank">Ver</a>
+                                        <a href="/editar-informe/${informe.id}">Editar</a>
+                                    </td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </body>
+            </html>
+        `);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error al listar informes");
+    }
+});
 
 function verificarLogin(req, res, next){
 
@@ -306,6 +394,7 @@ app.post("/guardar-informe", upload.any(), async (req, res) => {
         const token = crypto.randomBytes(32).toString("hex");
 
         const {
+            informe_id,
             cliente,
             telefono,
             marca,
@@ -326,9 +415,39 @@ app.post("/guardar-informe", upload.any(), async (req, res) => {
 
         console.log(req.files);
 
-        const [resultado] = await pool.query(`
-            INSERT INTO informes_vehiculares
-            (
+        
+        const archivos = req.files || [];
+
+        const fotos = archivos.filter(file => file.fieldname !== "presupuesto_xlsx");
+
+        const presupuesto = archivos.find(file => file.fieldname === "presupuesto_xlsx");
+    
+        let informeId;
+
+        if(informe_id){
+
+            await pool.query(`
+                UPDATE informes_vehiculares
+                SET
+                    token = ?,
+                    cliente = ?,
+                    telefono = ?,
+                    marca = ?,
+                    modelo = ?,
+                    anio = ?,
+                    kms = ?,
+                    matricula = ?,
+                    estado = ?,
+                    chasis = ?,
+                    carroceria = ?,
+                    interior_auto = ?,
+                    mecanica = ?,
+                    electronica = ?,
+                    prueba_dinamica = ?,
+                    resumen = ?,
+                    recomendaciones = ?
+                WHERE id = ?
+            `, [
                 token,
                 cliente,
                 telefono,
@@ -340,43 +459,83 @@ app.post("/guardar-informe", upload.any(), async (req, res) => {
                 estado,
                 chasis,
                 carroceria,
-                interior_auto,
+                interior,
                 mecanica,
                 electronica,
-                prueba_dinamica,
+                prueba,
+                resumen,
+                recomendaciones,
+                informe_id
+            ]);
+        
+            informeId = informe_id;
+        
+        } else {
+        
+            const [resultado] = await pool.query(`
+                INSERT INTO informes_vehiculares
+                (
+                    token,
+                    cliente,
+                    telefono,
+                    marca,
+                    modelo,
+                    anio,
+                    kms,
+                    matricula,
+                    estado,
+                    chasis,
+                    carroceria,
+                    interior_auto,
+                    mecanica,
+                    electronica,
+                    prueba_dinamica,
+                    resumen,
+                    recomendaciones
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        
+                ON DUPLICATE KEY UPDATE
+                    token = VALUES(token),
+                    cliente = VALUES(cliente),
+                    marca = VALUES(marca),
+                    modelo = VALUES(modelo),
+                    anio = VALUES(anio),
+                    kms = VALUES(kms),
+                    matricula = VALUES(matricula),
+                    estado = VALUES(estado),
+                    chasis = VALUES(chasis),
+                    carroceria = VALUES(carroceria),
+                    interior_auto = VALUES(interior_auto),
+                    mecanica = VALUES(mecanica),
+                    electronica = VALUES(electronica),
+                    prueba_dinamica = VALUES(prueba_dinamica),
+                    resumen = VALUES(resumen),
+                    recomendaciones = VALUES(recomendaciones)
+            `, [
+                token,
+                cliente,
+                telefono,
+                marca,
+                modelo,
+                anio,
+                kms,
+                matricula,
+                estado,
+                chasis,
+                carroceria,
+                interior,
+                mecanica,
+                electronica,
+                prueba,
                 resumen,
                 recomendaciones
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [
-            token,
-            cliente,
-            telefono,
-            marca,
-            modelo,
-            anio,
-            kms,
-            matricula,
-            estado,
-            chasis,
-            carroceria,
-            interior,
-            mecanica,
-            electronica,
-            prueba,
-            resumen,
-            recomendaciones
-        ]);
-
-        const informeId = resultado.insertId;
-
-        const archivos = req.files || [];
-
-        const fotos = archivos.filter(file => file.fieldname !== "presupuesto_xlsx");
-
-        const presupuesto = archivos.find(file => file.fieldname === "presupuesto_xlsx");
-
-    
+            ]);
+        
+           
+            informeId = resultado.insertId;
+        }
+        
         for (const file of fotos) {
             await pool.query(`
                 INSERT INTO fotos_informes_vehiculares (informe_id, seccion, ruta_foto)
@@ -422,32 +581,42 @@ app.post("/guardar-informe", upload.any(), async (req, res) => {
         console.log("ID GUARDADO:", informeId);
 
         const urlInforme = `https://tallerboutique.com.uy/informe/${token}`;
-        try {
-            await enviarInformeWhatsApp(
-                telefono,
-                cliente,
-                urlInforme
-            );
-        
-            res.json({
-                ok: true,
-                mensaje: "Informe guardado y enviado por WhatsApp",
-                enviadoAutomatico: true,
-                link: urlInforme
-            });
-        
-        } catch (errorWhatsapp) {
-            console.error("ERROR ENVIANDO WHATSAPP:", errorWhatsapp);
-        
-            res.json({
-                ok: true,
-                mensaje: "Informe guardado, pero no se pudo enviar automático",
-                enviadoAutomatico: false,
-                telefono: telefono,
-                link: urlInforme
-            });
+     
+        if (req.body.enviarWhatsapp === "true") {
+     
+            try {
+                await enviarInformeWhatsApp(
+                    telefono,
+                    cliente,
+                    urlInforme
+                );
+            
+                return res.json({
+                    ok: true,
+                    mensaje: "Informe guardado y enviado por WhatsApp",
+                    enviadoAutomatico: true,
+                    link: urlInforme
+                });
+            
+            } catch (errorWhatsapp) {
+                console.error("ERROR ENVIANDO WHATSAPP:", errorWhatsapp);
+            
+                return res.json({
+                    ok: true,
+                    mensaje: "Informe guardado, pero no se pudo enviar automático",
+                    enviadoAutomatico: false,
+                    telefono: telefono,
+                    link: urlInforme
+                });
+            }
         }
 
+        return res.json({
+            ok: true,
+            mensaje: "Informe guardado correctamente",
+            enviadoAutomatico: false,
+            link: urlInforme
+        });
                 
     } catch (error) {
         console.error("ERROR AL GUARDAR INFORME:", error);
@@ -699,7 +868,7 @@ app.get("/informe/:token", async (req, res) => {
 
                     <h2>Recomendaciones</h2>
                     <p>${info.recomendaciones || ""}</p>
-                    ${renderFotos(fotosPorSeccion.fotos_recomendaciones)}
+                
                     ${info.presupuesto_pdf ? `
                         <h2>Presupuesto</h2>
                         <p>
@@ -719,10 +888,103 @@ app.get("/informe/:token", async (req, res) => {
     }
 });
 
+app.delete("/api/foto/:id", verificarLogin, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const [rows] = await pool.query(
+            "SELECT ruta_foto FROM fotos_informes_vehiculares WHERE id = ?",
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.json({ ok: false, mensaje: "Foto no encontrada" });
+        }
+
+        const rutaFoto = rows[0].ruta_foto;
+        const rutaArchivo = path.join(__dirname, "public", rutaFoto);
+
+        if (fs.existsSync(rutaArchivo)) {
+            fs.unlinkSync(rutaArchivo);
+        }
+
+        await pool.query(
+            "DELETE FROM fotos_informes_vehiculares WHERE id = ?",
+            [id]
+        );
+
+        res.json({ ok: true });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error al borrar foto"
+        });
+    }
+});
+
+app.get("/api/informe/:id", verificarLogin, async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const [rows] = await pool.query(
+            "SELECT * FROM informes_vehiculares WHERE id = ?",
+            [id]
+        );
+
+        if(rows.length === 0){
+
+            return res.status(404).json({
+                ok:false,
+                mensaje:"Informe no encontrado"
+            });
+        }
+
+        const [fotos] = await pool.query(
+            "SELECT * FROM fotos_informes_vehiculares WHERE informe_id = ?",
+            [id]
+        );
+        
+
+        res.json({
+            ok:true,
+            informe: rows[0],
+            fotos: fotos
+        });
+
+    } catch(error){
+
+        console.error(error);
+
+        res.status(500).json({
+            ok:false,
+            mensaje:"Error al cargar informe"
+        });
+    }
+});
+
+
+app.get("/editar-informe/:id", verificarLogin, (req, res) => {
+
+    res.sendFile(
+        path.join(__dirname, "public", "informe.html")
+    );
+
+});
+
+
 
 app.get("/", verificarLogin, (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+app.get("/informe-nuevo", verificarLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "informe.html"));
+});
+
 
 app.use("/css", verificarLogin, express.static(path.join(__dirname, "public/css")));
 app.use("/img", express.static(path.join(__dirname, "public/img")));

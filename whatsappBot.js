@@ -7,12 +7,13 @@ let botListo = false;
 
 const client = new Client({
     authStrategy: new LocalAuth({
-        clientId: 'BotTrabajo'
+        clientId: 'WEB_TALLER'
     }),
     puppeteer: {
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox', "--disable-dev-shm-usage"]
-    }
+    },
+    userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 });
 
 /* 👇 AGREGAR ACÁ */
@@ -34,16 +35,36 @@ client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
 });
 
+client.on("authenticated", () => {
+    console.log("WhatsApp autenticado correctamente");
+});
+
 client.on('ready', () => {
     console.log('✅ WhatsApp CONECTADO');
     botListo = true;
 });
 
-client.on('disconnected', reason => {
-    console.log('ERROR: Desconectado:', reason);
+client.on("auth_failure", msg => {
+    console.log("ERROR DE AUTENTICACIÓN WHATSAPP:", msg);
+    botListo = false;
 });
 
-client.initialize();
+client.on("disconnected", async reason => {
+    console.log("ERROR: WhatsApp desconectado:", reason);
+    botListo = false;
+
+    try {
+        console.log("Intentando reiniciar WhatsApp...");
+        await client.initialize();
+    } catch (error) {
+        console.log("No se pudo reiniciar WhatsApp:", error.message);
+    }
+});
+
+client.initialize().catch(error => {
+    console.log("ERROR INICIANDO WHATSAPP:", error.message);
+    botListo = false;
+});
 
 async function enviarInformeWhatsApp(telefono, cliente, urlInforme){
 

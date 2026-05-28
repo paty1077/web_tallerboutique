@@ -70,8 +70,27 @@ function mostrarPreview(id) {
     });
 }
 
+async function guardarInforme() {
+    console.log("SOLO GUARDAR");
+    guardarInformeServidor(false);
+}
+
+
+
 async function enviarWhatsApp() {
+    console.log("GUARDAR Y ENVIAR");
+    guardarInformeServidor(true);
+}
+
+async function guardarInformeServidor(enviarWhatsapp) {
+
     const formData = new FormData();
+
+    const informeId = document.getElementById("informe_id").value;
+
+    if(informeId){
+        formData.append("informe_id", informeId);
+    }
 
     const telefonoInput = document.getElementById("telefono").value;
 
@@ -106,6 +125,9 @@ async function enviarWhatsApp() {
         formData.append("presupuesto_xlsx", presupuestoInput.files[0]);
     }
 
+    formData.append("enviarWhatsapp", enviarWhatsapp);
+
+
     const boton = document.querySelector("#btnEnviar");
 
     try {
@@ -119,7 +141,19 @@ async function enviarWhatsApp() {
             body: formData
         });
 
-        const data = await respuesta.json();
+        const texto = await respuesta.text();
+
+        console.log("STATUS:", respuesta.status);
+        console.log("RESPUESTA CRUDA:", texto);
+
+        let data;
+
+        try {
+            data = JSON.parse(texto);
+        } catch (error) {
+            alert("El servidor no devolvió JSON. Mirá la consola del servidor.");
+            return;
+        }
 
         console.log("RESPUESTA SERVIDOR:", data);
 
@@ -128,9 +162,9 @@ async function enviarWhatsApp() {
             return;
         }
 
-        if (data.enviadoAutomatico) {
+        if (enviarWhatsapp && data.enviadoAutomatico) {
             alert("✅ Informe guardado y enviado correctamente por WhatsApp.");
-        } else {
+        } else if (enviarWhatsapp && !data.enviadoAutomatico) {
             let telefono = data.telefono.replace(/\D/g, "");
 
             if (telefono.length === 8) {
@@ -145,6 +179,8 @@ async function enviarWhatsApp() {
 
             alert("✅ Informe guardado. Se abrirá WhatsApp para enviarlo manualmente.");
             window.open(urlWhatsApp, "_blank");
+        } else {
+            alert("✅ Informe guardado correctamente.");
         }
 
     } catch (error) {
@@ -158,3 +194,101 @@ async function enviarWhatsApp() {
         }
     }
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const partes = window.location.pathname.split("/");
+    const esEdicion = partes[1] === "editar-informe";
+
+    if(partes[1] === "editar-informe"){
+
+        const id = partes[2];
+
+        const respuesta = await fetch(`/api/informe/${id}`);
+        const data = await respuesta.json();
+
+        if(!data.ok){
+            alert("No se pudo cargar el informe");
+            return;
+        }
+
+        const informe = data.informe;
+
+        document.getElementById("tituloFormulario").textContent =
+        "Editar Informe";
+
+        document.getElementById("subtituloFormulario").textContent =
+        "Modificá los datos guardados";
+
+        document.getElementById("informe_id").value = informe.id || "";
+
+        document.getElementById("cliente").value = informe.cliente || "";
+        document.getElementById("telefono").value = informe.telefono || "";
+
+        document.getElementById("marca").value = informe.marca || "";
+        document.getElementById("modelo").value = informe.modelo || "";
+        document.getElementById("anio").value = informe.anio || "";
+        document.getElementById("kms").value = informe.kms || "";
+        document.getElementById("matricula").value = informe.matricula || "";
+        document.getElementById("estado").value = informe.estado || "";
+
+        document.getElementById("chasis").value = informe.chasis || "";
+        document.getElementById("carroceria").value = informe.carroceria || "";
+        document.getElementById("interior").value = informe.interior_auto || "";
+
+        document.getElementById("mecanica").value = informe.mecanica || "";
+        document.getElementById("electronica").value = informe.electronica || "";
+        document.getElementById("prueba").value = informe.prueba_dinamica || "";
+
+        document.getElementById("resumen").value = informe.resumen || "";
+        document.getElementById("recomendaciones").value = informe.recomendaciones || "";
+
+        const fotos = data.fotos || [];
+
+        fotos.forEach(foto => {
+
+            const preview = document.getElementById(
+                "preview_" + foto.seccion
+            );
+        
+            if(!preview) return;
+        
+            const contenedor = document.createElement("div");
+            contenedor.classList.add("preview-item");
+        
+            const img = document.createElement("img");
+            img.src = foto.ruta_foto;
+        
+            const botonEliminar = document.createElement("button");
+        
+            botonEliminar.innerText = "✕";
+            botonEliminar.type = "button";
+            botonEliminar.classList.add("btn-eliminar");
+        
+            botonEliminar.addEventListener("click", async () => {
+        
+                if(!confirm("¿Eliminar esta foto?")) return;
+        
+                const respuesta = await fetch(`/api/foto/${foto.id}`, {
+                    method: "DELETE"
+                });
+        
+                const data = await respuesta.json();
+        
+                if(data.ok){
+        
+                    contenedor.remove();
+        
+                } else {
+        
+                    alert("No se pudo borrar la foto");
+                }
+            });
+        
+            contenedor.appendChild(img);
+            contenedor.appendChild(botonEliminar);
+        
+            preview.appendChild(contenedor);
+        });
+    }
+});
