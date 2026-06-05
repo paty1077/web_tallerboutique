@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tallerboutique.com.uy/sitemap.xml

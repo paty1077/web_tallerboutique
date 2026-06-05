@@ -990,6 +990,8 @@ app.use("/css", verificarLogin, express.static(path.join(__dirname, "public/css"
 app.use("/img", express.static(path.join(__dirname, "public/img")));
 app.use("/js", verificarLogin, express.static(path.join(__dirname, "public/js")));
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+
+app.use(express.static(path.join(__dirname, "public")));
 app.listen(3000, () => {
     console.log("Servidor funcionando en http://localhost:3000");
 });
